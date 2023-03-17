@@ -40,8 +40,9 @@ export function SideBar() {
         w='100%'
         h='100vh'
         direction='column'
-        px={10}
+        px={2}
         py={6}
+        mr='8'
         bg={theme.colors.primary_dark}
       >
         <Box mt={12}>
@@ -53,13 +54,11 @@ export function SideBar() {
               (page) =>
                 page.icon && (
                   <Button
-                    bg='red'
-                    height='40px'
+                    height='54px'
                     display='flex'
                     alignItems='center'
                     border='none'
-                    // onClick={() => push(page.path)}
-                    background={theme.colors.primary_light}
+                    bg={theme.colors.primary_light}
                     w='100%'
                     p={4}
                     key={page.path}
@@ -69,9 +68,7 @@ export function SideBar() {
                       as={page.icon}
                       size='20px'
                       fontSize={24}
-                      ml={5}
                       color={theme.colors.shape}
-                      // color={page.path === currentPath ? 'white' : 'cta'}
                     />
                     <Box
                       overflow='hidden'
@@ -110,7 +107,6 @@ export function SideBar() {
             size='20px'
             fontSize={24}
             color={theme.colors.secondary_red}
-            ml={5}
           />
           <Box
             overflow='hidden'

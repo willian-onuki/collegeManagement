@@ -8,6 +8,7 @@ import { Colleges } from './pages/Colleges';
 import { Classrooms } from './pages/Classrooms';
 import { ThemeProvider } from 'styled-components';
 import theme from './styles/theme';
+import { ChakraProvider } from '@chakra-ui/react';
 
 const router = createBrowserRouter([
   {
@@ -26,8 +27,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <ChakraProvider>
+      <ThemeProvider theme={theme}>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </ChakraProvider>
   </React.StrictMode>
 );

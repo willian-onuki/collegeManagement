@@ -3,7 +3,7 @@ import { SiGoogleclassroom } from 'react-icons/si';
 import { FaSchool } from 'react-icons/fa';
 export const PAGES = [
   {
-    path: '/dashboard',
+    path: '/',
     name: 'Dashboard',
     icon: RxDashboard,
   },

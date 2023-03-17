@@ -13,9 +13,7 @@ export function GenericPage({children}: Props) {
       <WrapperSideBar>
         <SideBar/>
       </WrapperSideBar>
-      <WrapperPage>
-        {children}
-      </WrapperPage>
+      <WrapperPage>{children}</WrapperPage>
     </Container>
   )
 }
