@@ -8,5 +8,6 @@ export default {
     secondary_red: '#ff7f66',
     secondary_blue: '#6691ff',
     secondary_black: '#050609',
-  }
+    border: '#DFDFDF',
+  },
 };

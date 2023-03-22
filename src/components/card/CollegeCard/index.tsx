@@ -3,33 +3,57 @@ import {
   Button,
   Card,
   CardBody,
+  Center,
   Collapse,
-  Heading, HStack,
+  Flex,
+  Heading,
+  HStack,
   Image,
   Stack,
   Text,
-  useDisclosure
+  useDisclosure,
 } from '@chakra-ui/react';
 import { useTheme } from 'styled-components';
+import { FiCameraOff } from 'react-icons/fi';
+import { CollegeDTO } from '../../../dtos/CollegeDTO';
 
-export function CollegeCard() {
+interface CollegeCardProps {
+  college: CollegeDTO;
+}
+
+export function CollegeCard({ college }: CollegeCardProps) {
   const { isOpen, onToggle } = useDisclosure();
   const theme = useTheme();
 
   return (
-    <Card maxW='sm' alignSelf='flex-start'>
+    <Card
+      maxW='sm'
+      alignSelf='flex-start'
+    >
       <CardBody>
-        <Image
-          w='100%'
-          h='auto'
-          objectFit='scale-down'
-          src='https://cdn.britannica.com/03/130603-050-37F7F535/Alliman-Administration-Center-Hesston-College-Mennonite-college.jpg'
-        />
+        {college.image ? (
+          <Image
+            w='100%'
+            h='200px'
+            objectFit='scale-down'
+            src={String(college.image)}
+          />
+        ) : (
+          <Flex
+            alignItems='center'
+            justifyContent='center'
+            py='80px'
+            h='200px'
+            bg='gray.100'
+          >
+            <FiCameraOff size={50} />
+          </Flex>
+        )}
         <Stack
           mt='6'
           spacing='3'
         >
-          <Heading size='md'>Nome Escola</Heading>
+          <Heading size='md'>{college.name}</Heading>
           <Collapse
             in={isOpen}
             animateOpacity
@@ -42,13 +66,11 @@ export function CollegeCard() {
               rounded='md'
               shadow='md'
             >
-              <Text>Estado E</Text>
-              <Text>Cidade Cidade</Text>
-              <HStack>
-                <Text>Rua rua</Text>
-                <Text>Número 00</Text>
-              </HStack>
-              <Text>Bairro Bairro</Text>
+              <Text>Estado {college.state}</Text>
+              <Text>Cidade {college.city}</Text>
+              <Text>Rua {college.street}</Text>
+              <Text>Número {college.number}</Text>
+              <Text>Bairro {college.neighborhood}</Text>
             </Box>
           </Collapse>
           <Button

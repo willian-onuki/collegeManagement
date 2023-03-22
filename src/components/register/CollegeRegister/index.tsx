@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormData } from '../../../dtos/FormDataDTO';
 import { FormInput } from '../../FormInput';
@@ -17,10 +17,18 @@ import {
   SelectedImage,
   WrapperInput,
 } from './styles';
+import { api } from '../../../services/api';
+import { useAuth } from '../../../context/Auth';
+import { useAlert } from '../../../context/Alert';
 
-export function CollegeRegister() {
+interface Props {
+  setIndex: (value: number) => void;
+}
+
+export function CollegeRegister({setIndex}: Props) {
+  const { showAlert } = useAlert();
   const { estados } = useEstado();
-
+  const { data } = useAuth();
   const schema = Yup.object().shape({
     name: Yup.string().required('O nome é obrigatório'),
     state: Yup.string().required('O estado é obrigatório'),
@@ -45,17 +53,21 @@ export function CollegeRegister() {
 
   const [selectedImage, setSelectedImage] = useState<ArrayBuffer | string>('');
 
-  const handleForm = (data: FormData) => {
-    console.log('HANDLE FORM DATA');
-    console.log(data);
-    const dataRequest = {
-      ...data,
-      image: selectedImage,
-    };
-    console.log(
-      '🚀 ~ file: index.tsx:55 ~ handleForm ~ dataRequest:',
-      dataRequest
-    );
+  const handleForm = async (formData: FormData) => {
+    try {
+      await api.post('/college', { ...formData, image: selectedImage });
+      showAlert({
+        type: 'success',
+        title: 'Colégio cadastrado',
+      });
+      setIndex(0)
+    } catch (error) {
+      showAlert({
+        type: 'error',
+        title: 'Opa',
+        message: 'Erro ao cadastrar colégio',
+      });
+    }
   };
 
   const handleImage = (file: FileList | null) => {
@@ -75,7 +87,10 @@ export function CollegeRegister() {
 
   return (
     <Container>
-      <Form onSubmit={handleSubmit(handleForm)}>
+      <Form
+        onSubmit={handleSubmit(handleForm)}
+        encType='multipart/form-data'
+      >
         <WrapperInput>
           <FormInput
             name='name'
@@ -144,7 +159,7 @@ export function CollegeRegister() {
             error={errors.number?.message}
           />
 
-          {selectedImage && <SelectedImage src={String(selectedImage!)} />}
+          {selectedImage && <SelectedImage src={ String(selectedImage!)} />}
           <ImagePicker
             type='file'
             onChange={(e) => handleImage(e.target.files)}

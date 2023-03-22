@@ -5,8 +5,10 @@ import { PAGES } from '../../constants';
 import { FiPower } from 'react-icons/fi';
 import { useTheme } from 'styled-components';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../context/Auth';
 export function SideBar() {
   const theme = useTheme();
+  const { signOut } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
   const variants = {
@@ -111,6 +113,7 @@ export function SideBar() {
           <Box
             overflow='hidden'
             width='100%'
+            onClick={signOut}
           >
             <Text
               whiteSpace='nowrap'
