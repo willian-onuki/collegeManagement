@@ -46,42 +46,62 @@ import { ClassroomUpdateProps } from '../../../pages/Classrooms';
 import { getSubjectIcon } from '../../../utils/getSubjectIcon';
 import { Buffer } from 'buffer';
 import { CollegeCard } from '../CollegeCard';
+import { useAlert } from '../../../context/Alert';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   classroom: ClassRoomDTO;
   handleUpdate: (data: ClassroomUpdateProps) => void;
+  getData: () => void;
 }
 
-export function ClassroomCard({ classroom, handleUpdate }: Props) {
+export function ClassroomCard({ classroom, handleUpdate, getData }: Props) {
   const [isLocked, setIsLocked] = useState(classroom.locked);
   const [subject, setSubject] = useState<SubjectDTO>({} as SubjectDTO);
   const [college, setCollege] = useState<CollegeDTO>({} as CollegeDTO);
   const [image, setImage] = useState<ArrayBuffer | string>('');
-
+  const { showAlert } = useAlert();
   const { isOpen, onToggle } = useDisclosure();
-  const { isOpen: isOpenAlert, onOpen: onOpenAlert, onClose: onCloseAlert } = useDisclosure();
+  const {
+    isOpen: isOpenAlert,
+    onOpen: onOpenAlert,
+    onClose: onCloseAlert,
+  } = useDisclosure();
   const cancelRef = useRef(null);
   const theme = useTheme();
 
   const handleUpdateLockState = async () => {
     try {
-      const res = await api.post(`/classroom/lock-classroom/${classroom.id}`, {
+      await api.post(`/classroom/lock-classroom/${classroom.id}`, {
         ...classroom,
         locked: !isLocked,
       });
-      setIsLocked(!isLocked);
     } catch (err) {
-      alert(err);
+      showAlert({
+        type: 'error',
+        title: isLocked
+          ? 'Não foi possível desbloquear'
+          : 'Não foi possível bloquear',
+      });
     }
   };
 
   const handleDeleteClassroom = async () => {
     try {
-      await api.delete(`/classroom/delete-classroom/${classroom.id}`)
+      await api.delete(`/classroom/delete-classroom/${classroom.id}`);
+      setIsLocked(!isLocked);
+      showAlert({
+        type: 'success',
+        title: 'Sala excluído',
+      });
+      getData();
     } catch (error) {
-      alert(error)
+      showAlert({
+        type: 'error',
+        title: 'Erro ao excluie',
+      });
     }
-  }
+  };
 
   useEffect(() => {
     GetSubjectById({
@@ -246,7 +266,10 @@ export function ClassroomCard({ classroom, handleUpdate }: Props) {
               </Button>
               <Button
                 colorScheme='red'
-                onClick={handleDeleteClassroom}
+                onClick={() => {
+                  handleDeleteClassroom();
+                  onCloseAlert();
+                }}
                 ml={3}
               >
                 Delete

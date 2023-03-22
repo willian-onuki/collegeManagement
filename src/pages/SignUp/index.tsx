@@ -34,8 +34,6 @@ export function SignUp() {
   });
 
   const handleForm = async (data: FormData) => {
-    console.log('FORM DATA');
-    console.log(data);
     const params = {
       name: data.name,
       email: data.email,

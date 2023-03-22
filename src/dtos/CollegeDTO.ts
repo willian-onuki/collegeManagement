@@ -6,5 +6,5 @@ export interface CollegeDTO {
   street: string;
   neighborhood: string;
   number: number;
-  image: ArrayBuffer;
+  image: ArrayBuffer | string;
 }

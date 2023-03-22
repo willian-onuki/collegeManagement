@@ -21,14 +21,14 @@ import { api } from '../../../services/api';
 import { useAuth } from '../../../context/Auth';
 import { useAlert } from '../../../context/Alert';
 
+
 interface Props {
-  setIndex: (value: number) => void;
+  setIndexTab: (value: number) => void;
 }
 
-export function CollegeRegister({setIndex}: Props) {
+export function CollegeRegister({ setIndexTab } : Props) {
   const { showAlert } = useAlert();
   const { estados } = useEstado();
-  const { data } = useAuth();
   const schema = Yup.object().shape({
     name: Yup.string().required('O nome é obrigatório'),
     state: Yup.string().required('O estado é obrigatório'),
@@ -55,12 +55,21 @@ export function CollegeRegister({setIndex}: Props) {
 
   const handleForm = async (formData: FormData) => {
     try {
-      await api.post('/college', { ...formData, image: selectedImage });
+      await api.post('/college', {
+        name: formData.name,
+        state: formData.state,
+        street: formData.street,
+        city: formData.city,
+        neighborhood: formData.neighborhood,
+        number: formData.number,
+        image: selectedImage || null,
+      });
+
       showAlert({
         type: 'success',
         title: 'Colégio cadastrado',
       });
-      setIndex(0)
+      setIndexTab(0);
     } catch (error) {
       showAlert({
         type: 'error',
@@ -89,7 +98,6 @@ export function CollegeRegister({setIndex}: Props) {
     <Container>
       <Form
         onSubmit={handleSubmit(handleForm)}
-        encType='multipart/form-data'
       >
         <WrapperInput>
           <FormInput
@@ -159,7 +167,7 @@ export function CollegeRegister({setIndex}: Props) {
             error={errors.number?.message}
           />
 
-          {selectedImage && <SelectedImage src={ String(selectedImage!)} />}
+          {selectedImage && <SelectedImage src={String(selectedImage!)} />}
           <ImagePicker
             type='file'
             onChange={(e) => handleImage(e.target.files)}

@@ -59,7 +59,10 @@ export function Colleges() {
               >
                 {allCollege &&
                   allCollege.map((college, index) => (
-                    <CollegeCard college={college} key={index} />
+                    <CollegeCard
+                      college={college}
+                      key={index}
+                    />
                   ))}
               </SimpleGrid>
               {allCollege.length === 0 && (
@@ -67,7 +70,7 @@ export function Colleges() {
               )}
             </TabPanel>
             <TabPanel>
-              <CollegeRegister setIndex={setIndexTab}/>
+              <CollegeRegister setIndexTab={setIndexTab} />
             </TabPanel>
           </TabPanels>
         </Tabs>

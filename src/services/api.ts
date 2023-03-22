@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { DataProps } from '../context/Auth';
 
 export const api = axios.create({
-  baseURL: 'http://192.168.18.3:3333',
+  baseURL: 'http://localhost:3333',
 });
 
 api.interceptors.request.use((config) => {
@@ -22,10 +22,10 @@ api.interceptors.response.use(
     resolve(response);
   }),
   (error) => {
-    const navigate = useNavigate();
     if (error.response.status === 401) {
       localStorage.removeItem('data');
-      navigate('/sign-in');
+      const navigate = useNavigate();
+      navigate(0);
     }
   }
 )

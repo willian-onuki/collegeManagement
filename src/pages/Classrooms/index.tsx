@@ -24,22 +24,29 @@ export interface ClassroomUpdateProps {
 export function Classrooms() {
   const [allClassroom, setAllClassroom] = useState<ClassRoomDTO[]>([]);
   const [indexTab, setIndexTab] = useState(0);
-  const [classroomToUpdate, setClassroomToUpdate] = useState<ClassRoomDTO>({} as ClassRoomDTO);
+  const [classroomToUpdate, setClassroomToUpdate] = useState<ClassRoomDTO>(
+    {} as ClassRoomDTO
+  );
+  const [classroomDeleted, setClassroomDeleted] = useState(false);
+  const handleClassroomUpdate = useCallback(
+    ({ index, classroom }: ClassroomUpdateProps) => {
+      setIndexTab(index);
+      setClassroomToUpdate(classroom);
+    },
+    []
+  );
 
-  const handleClassroomUpdate = useCallback(({index, classroom}: ClassroomUpdateProps) => {
-    setIndexTab(index);
-    setClassroomToUpdate(classroom);
-  },[])
+  const getData = useCallback(() => {
+    getClassroom({
+      onSuccess: (data) => setAllClassroom(data),
+      onError: () => {},
+      params: 'classroom',
+    });
+  }, []);
 
-    useEffect(() => {
-      getClassroom({
-        onSuccess: (data) => setAllClassroom(data),
-        onError: () => {
-
-        },
-        params: 'classroom'
-      })
-    }, [indexTab]);
+  useEffect(() => {
+    getData();
+  }, [indexTab, classroomDeleted]);
 
   return (
     <GenericPage>
@@ -48,7 +55,7 @@ export function Classrooms() {
         variant='line'
         index={indexTab}
         onChange={(index) => {
-          setIndexTab(index)
+          setIndexTab(index);
           setClassroomToUpdate({} as ClassRoomDTO);
         }}
       >
@@ -63,10 +70,12 @@ export function Classrooms() {
               spacing='40px'
             >
               {allClassroom &&
-                allClassroom.map((classroom) => (
+                allClassroom.map((classroom, index) => (
                   <ClassroomCard
+                    key={index}
                     classroom={classroom}
                     handleUpdate={handleClassroomUpdate}
+                    getData={getData}
                   />
                 ))}
             </SimpleGrid>

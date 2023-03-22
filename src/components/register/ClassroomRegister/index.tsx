@@ -31,6 +31,7 @@ import { ClassRoomDTO } from '../../../dtos/ClassRoomDTO';
 import { convertToOptions } from '../../../utils/convertToOptions';
 import { decode as base64_decode, encode as base64_encode } from 'base-64';
 import { useAlert } from '../../../context/Alert';
+import { useNavigate } from 'react-router-dom';
 interface Props {
   classroomUpdate: ClassRoomDTO;
   index: number;
@@ -60,7 +61,7 @@ export function ClassroomRegister({ classroomUpdate, index, setIndex }: Props) {
   } = useForm<FormData>({
     resolver: yupResolver(schema),
   });
-
+  const navigate = useNavigate();
   const { showAlert } = useAlert();
   const [isLocked, setIsLocked] = useState('no');
   const [selectedImage, setSelectedImage] = useState<ArrayBuffer | string>('');
@@ -81,11 +82,9 @@ export function ClassroomRegister({ classroomUpdate, index, setIndex }: Props) {
   );
   const { collegeOptions } = useCollege();
   const handleForm = async (data: FormData) => {
-    console.log('HANDLE FORM DATA');
-    console.log(data);
     try {
       if (!classroomUpdate.id) {
-        await api.post('/classroom', {
+        const res = await api.post('/classroom', {
           name: data.name,
           tableCapacity: data.tableCapacity,
           locked: isLocked === 'yes' ? true : false,
@@ -94,10 +93,14 @@ export function ClassroomRegister({ classroomUpdate, index, setIndex }: Props) {
           college: selectedCollege,
           class_grade: selectedImage || null,
           protocol: selectedProtocolImage || null,
+          image: selectedClassroomImage || null,
         });
-        reset();
+        if (res) {
+          reset({});
+          setIndex(0);
+        }
       } else {
-        await api.put(`/classroom/${classroomUpdate.id}`, {
+        const res = await api.put(`/classroom/${classroomUpdate.id}`, {
           name: data.name,
           tableCapacity: data.tableCapacity,
           locked: isLocked === 'yes' ? true : false,
@@ -111,18 +114,25 @@ export function ClassroomRegister({ classroomUpdate, index, setIndex }: Props) {
           protocol: selectedProtocolImage || null,
           image: selectedClassroomImage || null,
         });
+        if (res) {
+          reset({});
+          setIndex(0);
+        }
       }
-      reset();
-    } catch (error) {
-      alert(error);
-    } finally {
       showAlert({
         type: 'success',
         title: classroomUpdate.id
           ? 'Sala de aula Atualizado'
           : 'Sala de aula Cadastrado',
       });
-      setIndex(0);
+    } catch (error) {
+      showAlert({
+        type: 'error',
+        title: !classroomUpdate.id
+        ? 'Erro ao savar sala de aula'
+        : 'Erro ao atualizar sala de aula',
+      });
+      reset({});
     }
   };
 

@@ -15,8 +15,8 @@ export function useCollege() {
   const [collegeOptions, setCollegeOptions] = useState<CollegeOptions[]>([]);
 
   useEffect(() => {
-    setCollegeOptions([]);
     const getData = async () => {
+      setCollegeOptions([]);
       const { data } = await api.get<Response>('/college');
       data.data.map(({ id, name }) =>
         setCollegeOptions((oldState) => [
